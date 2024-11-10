@@ -1,0 +1,336 @@
+/* 1. Global Styles and Typography */
+/* Mobile-first font sizing using clamp() for responsive typography */
+h1 {
+    font-size: clamp(1.5rem, 4vw, 3rem); /* Dynamically scale heading sizes */
+    animation: fadeInDown 1s ease-out; /* Apply the fade-in animation */
+}
+
+p {
+    font-size: clamp(1rem, 2vw, 1.5rem); /* Responsive paragraph size */
+}
+
+/* 2. Icon Styling */
+.icon {
+    width: 24px;
+    height: 24px;
+    vertical-align: middle;
+}
+
+/* 3. Horizontal Navigation Bar with Border */
+#main-nav {
+    border: 2px solid #333;
+    padding: 10px;
+    background-color: #f9f9f9;
+}
+
+#main-nav ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap; /* Ensures proper wrapping on smaller screens */
+    justify-content: space-around;
+}
+
+#main-nav ul li {
+    margin: 0 10px;
+}
+
+#main-nav ul li a {
+    padding: 10px 20px;
+    background-color: #f9f9f9;
+    border-radius: 4px;
+    text-transform: uppercase;
+    font-weight: bold;
+    text-decoration: none;
+    color: #000000;
+    transition: background-color 0.3s ease, border-color 0.3s ease, transform 0.3s ease; /* Added scale transform */
+}
+
+#main-nav ul li a:hover {
+    background-color: #e0e0e0;
+    border-color: #333;
+    color: #000;
+    transform: scale(1.1); /* Scale up slightly on hover */
+}
+
+/* 4. Header Section */
+header {
+    background-color: #b3e6ff;
+    padding: 20px;
+    text-align: center;
+}
+
+header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #000000;
+}
+
+/* Fade-in effect for the header */
+@keyframes fadeInDown {
+    0% {
+        opacity: 0;
+        transform: translateY(-20px); /* Start from above */
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0); /* End at the original position */
+    }
+}
+
+/* 5. Center container */
+.center-container {
+    width: 90%;
+    
+    margin: 0 auto;
+}
+
+.center-container table {
+    width: 100%; /* Full width on smaller screens */
+    margin-bottom: 20px;
+    overflow-x: auto; /* Makes tables scrollable horizontally on smaller screens */
+}
+
+/* 6. Table Styling */
+table {
+    border-spacing: 0;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+th, td {
+    padding: 12px;
+    border: 1px solid #ddd;
+    color: #000000;
+}
+
+th {
+    background-color: #f9f9f9;
+    font-weight: bold;
+    text-transform: uppercase;
+    position: sticky; /* Make headers sticky */
+    top: 0;
+    z-index: 2; /* Ensure headers stay on top */
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+/* Dark Mode for Table Row Background */
+tr.dark-mode:nth-child(odd) {
+    background-color: #333333; /* Darker background for odd rows */
+    color: #ffffff; /* White text for better contrast */
+}
+
+tr.dark-mode:nth-child(even) {
+    background-color: #444444; /* Darker background for even rows */
+    color: #e0e0e0; /* Light gray text for better readability */
+}
+
+/* Ensure Text Color is Light in Dark Mode */
+th.dark-mode, td.dark-mode {
+    color: #e0e0e0; /* Light gray text for improved contrast */
+}
+
+/* Table Header Styling for Dark Mode */
+th.dark-mode {
+    background-color: #555555; /* Slightly lighter background for headers */
+    color: #f5f5f5; /* Ensure the header text stands out */
+}
+
+/* Collapsible section for mobile tables */
+.collapsible-section {
+    display: none;
+}
+
+@media (max-width: 600px) {
+    .collapsible-section {
+        display: block;
+        background-color: #f9f9f9;
+        padding: 10px;
+        border: 1px solid #ddd;
+    }
+
+    .non-essential {
+        display: none;
+    }
+}
+
+/* 7. Athlete Styling */
+.athlete {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.athlete img {
+    display: block;
+    margin: 0 auto;
+    border-radius: 50%;
+    object-fit: cover;
+    width: clamp(100px, 20vw, 150px); /* Scales based on screen size */
+    height: clamp(100px, 20vw, 150px);
+    transition: transform 0.3s ease; /* Add transition for smooth animation */
+}
+
+.athlete img:hover {
+    transform: rotate(10deg); /* Rotate image on hover */
+}
+
+/* 8. Progress Bars */
+.progress-bar {
+    background-color: #ddd;
+    border-radius: 5px;
+    overflow: hidden;
+    height: 20px;
+    width: 100%;
+}
+
+.progress-bar span {
+    display: block;
+    height: 100%;
+    background-color: #4caf50;
+    width: 0;
+    animation: progressAnimation 2s ease-out forwards;
+}
+
+@keyframes progressAnimation {
+    from { width: 0; }
+    to { width: 80%; }
+}
+
+/* 9. Floating Action Button (FAB) */
+.fab {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #007f5f;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    box-shadow: 0px 4px 8px rgba(0,0,0,0.2);
+}
+
+.fab:active {
+    animation: bounce 0.3s;
+}
+
+@keyframes bounce {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px); /* Bounce up */
+    }
+}
+
+/* 10. Hover Effects and Section Transitions */
+.athlete-card {
+    transition: background-color 0.3s ease;
+}
+
+.athlete-card:active {
+    background-color: #e0e0e0;
+}
+
+@media (hover: hover) {
+    .athlete-card:hover {
+        background-color: #e92323;
+    }
+}
+
+/* 11. Dark Mode Styles with Improved Contrast */
+.dark-mode {
+    --bg-color: #121212; /* Very dark background for good contrast */
+    --text-color: #f1f1f1; /* Light text color for strong contrast */
+    --header-bg-color: #1e1e1e;
+    --nav-bg-color: #333333;
+    --border-color: #888888;
+    --hover-bg-color: #444444;
+    --table-header-color: #f5f5f5;
+    --table-row-color: #c2c2c2;
+}
+
+/* Body styling for dark mode */
+body.dark-mode {
+    background-color: var(--bg-color);
+    color: var(--text-color); /* Light text on dark background */
+}
+
+/* Header and Navigation in Dark Mode */
+header.dark-mode {
+    background-color: var(--header-bg-color);
+}
+
+#main-nav.dark-mode {
+    background-color: var(--nav-bg-color);
+}
+
+#main-nav ul li a.dark-mode {
+    color: var(--text-color); /* Light text */
+}
+
+#main-nav ul li a.dark-mode:hover {
+    background-color: var(--hover-bg-color); /* Dark hover background */
+    color: #ffffff; /* Ensure the text is visible on hover */
+}
+
+/* Table Styling for Dark Mode */
+table.dark-mode {
+    border-color: var(--border-color);
+    background-color: var(--header-bg-color);
+    color: var(--table-row-color); /* Ensure rows are light enough to read */
+}
+
+th.dark-mode {
+    background-color: var(--hover-bg-color);
+    color: var(--table-header-color); /* Ensure header text is visible */
+}
+
+td.dark-mode {
+    background-color: var(--bg-color);
+    border-color: var(--border-color);
+    color: var(--table-row-color); /* Ensure row text is light enough to read */
+}
+
+/* Buttons and FAB (Floating Action Button) */
+.fab.dark-mode {
+    background-color: #00b894; /* Bright color for contrast */
+}
+
+.fab.dark-mode:active {
+    animation: bounce 0.3s;
+}
+
+/* 12. Priority Data Highlighting for Mobile */
+@media (max-width: 600px) {
+    .non-essential {
+        display: none; /* Hide non-essential columns on small screens */
+    }
+
+    #main-nav ul {
+        flex-direction: column; /* Stack navigation links vertically on small screens */
+    }
+
+    table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap; /* Avoid table cells wrapping */
+    }
+}
+
+/* 13. Prefers Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+    }
+}
