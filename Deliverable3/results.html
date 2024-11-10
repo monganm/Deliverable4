@@ -26,81 +26,60 @@
         <div style="text-align: right; padding: 10px; background-color: #f1f1f1; border: 1px solid #000;">
             <button id="darkModeToggle">Toggle Dark Mode</button>
         </div>
-
-        <!-- Search Input -->
-        <div style="padding: 20px;">
-            <input type="text" id="searchInput" placeholder="Search for an athlete by name..." style="padding: 10px; width: 100%;">
-        </div>
-
+    
         <main id="content">
             <div class="center-container">
                 <section id="event-title">
                     <h2>Top 3 Results - Women</h2>
                 </section>
                 <section id="individual-results">
-                    <h2>Top Results</h2>
-    
-                    <div class="athlete">
-                        <h3>Riley Provost</h3>
-                        <p>Place: 1.</p>
-                        <p>Grade: 11</p>
-                        <p>Time: 23:15.00</p>
-                        <p>Team: Saline</p>
-                        <img src="images/default.jpg" alt="Profile Picture of Riley Provost" width="150">
-                    </div>
-                    <hr>
+                    <table border="1" cellspacing="0" cellpadding="10" style="width:100%; text-align:left;">
+                        <tr>
+                            <th>Place</th>
+                            <th>Name</th>
+                            <th>Grade</th>
+                            <th>Time</th>
+                            <th>Team</th>
+                        </tr>
         
-                    <div class="athlete">
-                        <h3>Claire Steinbrecher</h3>
-                        <p>Place: 2.</p>
-                        <p>Grade: 9</p>
-                        <p>Time: 23:18.50</p>
-                        <p>Team: Dexter</p>
-                        <img src="images/default.jpg" alt="Profile Picture of Claire Steinbrecher" width="150">
-                    </div>
-                    <hr>
-        
-                    <div class="athlete">
-                        <h3>Mahalia Staton</h3>
-                        <p>Place: 3.</p>
-                        <p>Grade: 11</p>
-                        <p>Time: 23:20.50</p>
-                        <p>Team: Saline</p>
-                        <img src="images/default.jpg" alt="Profile Picture of Mahalia Staton" width="150">
-                    </div>
-                    <hr>
-        
+                        <tr>
+                            <td>1.</td>
+                            <td>Riley Provost</td>
+                            <td>11</td>
+                            <td>23:15.00</td>
+                            <td>Saline</td>
+                        </tr>
+            
+                        <tr>
+                            <td>2.</td>
+                            <td>Claire Steinbrecher</td>
+                            <td>9</td>
+                            <td>23:18.50</td>
+                            <td>Dexter</td>
+                        </tr>
+            
+                        <tr>
+                            <td>3.</td>
+                            <td>Mahalia Staton</td>
+                            <td>11</td>
+                            <td>23:20.50</td>
+                            <td>Saline</td>
+                        </tr>
+            
+                    </table>
                 </section>
             </div>
         </main>
+        
         <footer id="main-footer">
             <p>&copy; 2024 Client Project - All rights reserved.</p>
         </footer>
 
-        <!-- JavaScript for Dark Mode and Search Functionality -->
+        <!-- JavaScript for Dark Mode -->
         <script>
-            // Dark Mode Toggle
             const toggleButton = document.getElementById('darkModeToggle');
             toggleButton.addEventListener('click', () => {
                 document.body.classList.toggle('dark-mode');
-            });
-
-            // Search Functionality
-            document.addEventListener("DOMContentLoaded", () => {
-                const searchInput = document.getElementById("searchInput");
-                const athleteCards = document.querySelectorAll(".athlete");
-
-                searchInput.addEventListener("input", () => {
-                    const searchTerm = searchInput.value.toLowerCase();
-                    athleteCards.forEach(card => {
-                        const athleteName = card.querySelector("h3").textContent.toLowerCase();
-                        if (athleteName.includes(searchTerm)) {
-                            card.style.display = "block";
-                        } else {
-                            card.style.display = "none";
-                        }
-                    });
-                });
             });
         </script>
     </body>

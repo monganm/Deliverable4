@@ -40,7 +40,7 @@ def get_top_results(results, top_n=3):
 def filter_by_grade(results, grade):
     return [result for result in results if result["Grade"] == grade]
 
-# HTML generation function
+# HTML generation function with table support for results.html
 def generate_html_page(filename, title, subtitle, individual_results):
     html_content = f"""
     <!DOCTYPE html>
@@ -70,12 +70,45 @@ def generate_html_page(filename, title, subtitle, individual_results):
         <div style="text-align: right; padding: 10px; background-color: #f1f1f1; border: 1px solid #000;">
             <button id="darkModeToggle">Toggle Dark Mode</button>
         </div>
+    """
 
-        <!-- Search Input -->
-        <div style="padding: 20px;">
-            <input type="text" id="searchInput" placeholder="Search for an athlete by name..." style="padding: 10px; width: 100%;">
-        </div>
-
+    if filename == "results.html":
+        # Generate table for top 3 results
+        html_content += f"""
+        <main id="content">
+            <div class="center-container">
+                <section id="event-title">
+                    <h2>{subtitle}</h2>
+                </section>
+                <section id="individual-results">
+                    <table border="1" cellspacing="0" cellpadding="10" style="width:100%; text-align:left;">
+                        <tr>
+                            <th>Place</th>
+                            <th>Name</th>
+                            <th>Grade</th>
+                            <th>Time</th>
+                            <th>Team</th>
+                        </tr>
+        """
+        for result in individual_results:
+            html_content += f"""
+                        <tr>
+                            <td>{result['Place']}</td>
+                            <td>{result['Name']}</td>
+                            <td>{result['Grade']}</td>
+                            <td>{result['Time']}</td>
+                            <td>{result['Team']}</td>
+                        </tr>
+            """
+        html_content += """
+                    </table>
+                </section>
+            </div>
+        </main>
+        """
+    else:
+        # Generate athlete cards for other pages
+        html_content += f"""
         <main id="content">
             <div class="center-container">
                 <section id="event-title">
@@ -83,59 +116,42 @@ def generate_html_page(filename, title, subtitle, individual_results):
                 </section>
                 <section id="individual-results">
                     <h2>Top Results</h2>
-    """
-    for result in individual_results:
-        athlete_name = result["Name"]
-        # Check if 'Profile Pic' is in the result and formatted correctly
-        if 'Profile Pic' in result and result['Profile Pic'] and len(result['Profile Pic'].split('/')) > 1:
-            image_path = f"{image_folder}/{result['Profile Pic'].split('/')[-2]}.jpg"
-        else:
-            image_path = "images/default.jpg"
-        
-        html_content += f"""
-                    <div class="athlete">
-                        <h3>{athlete_name}</h3>
-                        <p>Place: {result['Place']}</p>
-                        <p>Grade: {result['Grade']}</p>
-                        <p>Time: {result['Time']}</p>
-                        <p>Team: {result['Team']}</p>
-                        <img src="{image_path}" alt="Profile Picture of {athlete_name}" width="150">
-                    </div>
-                    <hr>
         """
-    
-    html_content += """
+        for result in individual_results:
+            athlete_name = result["Name"]
+            # Check if 'Profile Pic' is in the result and formatted correctly
+            if 'Profile Pic' in result and result['Profile Pic'] and len(result['Profile Pic'].split('/')) > 1:
+                image_path = f"{image_folder}/{result['Profile Pic'].split('/')[-2]}.jpg"
+            else:
+                image_path = "images/default.jpg"
+            
+            html_content += f"""
+                        <div class="athlete">
+                            <h3>{athlete_name}</h3>
+                            <p>Place: {result['Place']}</p>
+                            <p>Grade: {result['Grade']}</p>
+                            <p>Time: {result['Time']}</p>
+                            <p>Team: {result['Team']}</p>
+                            <img src="{image_path}" alt="Profile Picture of {athlete_name}" width="150">
+                        </div>
+                        <hr>
+            """
+        html_content += """
                 </section>
             </div>
         </main>
+        """
+
+    html_content += """
         <footer id="main-footer">
             <p>&copy; 2024 Client Project - All rights reserved.</p>
         </footer>
 
-        <!-- JavaScript for Dark Mode and Search Functionality -->
+        <!-- JavaScript for Dark Mode -->
         <script>
-            // Dark Mode Toggle
             const toggleButton = document.getElementById('darkModeToggle');
             toggleButton.addEventListener('click', () => {
                 document.body.classList.toggle('dark-mode');
-            });
-
-            // Search Functionality
-            document.addEventListener("DOMContentLoaded", () => {
-                const searchInput = document.getElementById("searchInput");
-                const athleteCards = document.querySelectorAll(".athlete");
-
-                searchInput.addEventListener("input", () => {
-                    const searchTerm = searchInput.value.toLowerCase();
-                    athleteCards.forEach(card => {
-                        const athleteName = card.querySelector("h3").textContent.toLowerCase();
-                        if (athleteName.includes(searchTerm)) {
-                            card.style.display = "block";
-                        } else {
-                            card.style.display = "none";
-                        }
-                    });
-                });
             });
         </script>
     </body>
@@ -148,7 +164,7 @@ def generate_html_page(filename, title, subtitle, individual_results):
 # Load women's data
 women_results = parse_csv(womens_file_path)
 
-# Generate overall results page - Top 3 Women
+# Generate results page as a table for top 3 results
 top_women = get_top_results(women_results, 3)
 generate_html_page("results.html", "Top 3 Results", "Top 3 Results - Women", top_women)
 
