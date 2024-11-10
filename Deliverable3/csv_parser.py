@@ -1,17 +1,8 @@
 import os
 
-# Paths to the existing CSV files
-mens_file_path = 'SEC_Jamboree_1_Mens_5000_Meters_Varsity_24.csv'
+# Path to the women's CSV file
 womens_file_path = 'SEC_Jamboree_1_Womens_5000_Meters_Junior_Varsity_24.csv'
-
-
 image_folder = 'images'
-
-# Diagnostic print to check file existence
-print("Checking if files exist:")
-print("Mens file:", os.path.exists(mens_file_path))
-print("Womens file:", os.path.exists(womens_file_path))
-print("Current Working Directory:", os.getcwd())
 
 # Function to parse CSV data manually
 def parse_csv(file_path):
@@ -45,7 +36,7 @@ def parse_csv(file_path):
 def get_top_results(results, top_n=3):
     return sorted(results, key=lambda x: x["Time"])[:top_n]
 
-# Function to filter results by grade and gender
+# Function to filter results by grade
 def filter_by_grade(results, grade):
     return [result for result in results if result["Grade"] == grade]
 
@@ -67,7 +58,6 @@ def generate_html_page(filename, title, subtitle, individual_results):
             <nav id="main-nav">
                 <ul>
                     <li><a href="results.html">Results</a></li>
-                    <li><a href="mens.html">Mens</a></li>
                     <li><a href="womens.html">Womens</a></li>
                     <li><a href="grade9.html">Grade 9</a></li>
                     <li><a href="grade10.html">Grade 10</a></li>
@@ -128,33 +118,17 @@ def generate_html_page(filename, title, subtitle, individual_results):
     with open(filename, 'w') as file:
         file.write(html_content)
 
-# Load data
-if os.path.exists(womens_file_path):
-    women_results = parse_csv(womens_file_path)
-else:
-    print("Error: Womens file not found.")
+# Load women's data
+women_results = parse_csv(womens_file_path)
 
-if os.path.exists(mens_file_path):
-    men_results = parse_csv(mens_file_path)
-else:
-    print("Error: Mens file not found.")
+# Generate overall results page - Top 3 Women
+top_women = get_top_results(women_results, 3)
+generate_html_page("results.html", "Top 3 Results", "Top 3 Results - Women", top_women)
 
-# Generate general results page - Top 3 Women
-if 'women_results' in locals():
-    top_women = get_top_results(women_results, 3)
-    generate_html_page("results.html", "Top 3 Results", "Top 3 Results - Women", top_women)
-
-# Men's Page - Top 3 Men
-if 'men_results' in locals():
-    top_men = get_top_results(men_results, 3)
-    generate_html_page("mens.html", "Top 3 Men's Results", "SEC Jamboree #1 Men's 5000 Meters Varsity", top_men)
-
-# Women's Page - Top 3 Women
-if 'top_women' in locals():
-    generate_html_page("womens.html", "Top 3 Women's Results", "SEC Jamboree #1 Women's 5000 Meters Junior Varsity", top_women)
+# Women's Page - All Results for Women
+generate_html_page("womens.html", "All Women's Results", "SEC Jamboree #1 Women's 5000 Meters Junior Varsity", women_results)
 
 # Grade-specific pages for Women
 for grade in [9, 10, 11, 12]:
-    if 'women_results' in locals():
-        grade_women = filter_by_grade(women_results, grade)
-        generate_html_page(f"grade{grade}.html", f"Grade {grade} Women's Results", f"SEC Jamboree #1 Women's Grade {grade}", grade_women)
+    grade_women = filter_by_grade(women_results, grade)
+    generate_html_page(f"grade{grade}.html", f"Grade {grade} Women's Results", f"SEC Jamboree #1 Women's Grade {grade}", grade_women)
