@@ -1,43 +1,56 @@
 import os
 
-# Path to the existing CSV file
-file_path = 'SEC_Jamboree_1_Womens_5000_Meters_Junior_Varsity_24.csv'
+# Paths to the existing CSV files
+mens_file_path = 'SEC_Jamboree_1_Mens_5000_Meters_Varsity_24.csv'
+womens_file_path = 'SEC_Jamboree_1_Womens_5000_Meters_Junior_Varsity_24.csv'
+
+
 image_folder = 'images'
 
-# Check if the CSV file exists
-if not os.path.exists(file_path):
-    raise FileNotFoundError(f"The file {file_path} does not exist.")
+# Diagnostic print to check file existence
+print("Checking if files exist:")
+print("Mens file:", os.path.exists(mens_file_path))
+print("Womens file:", os.path.exists(womens_file_path))
+print("Current Working Directory:", os.getcwd())
 
-# Function to parse CSV data
+# Function to parse CSV data manually
 def parse_csv(file_path):
-    team_scores = []
     individual_results = []
-    in_team_scores = False
-    in_individual_results = False
     with open(file_path, 'r') as file:
         lines = file.readlines()
+        in_individual_results = False
         for line in lines:
             line = line.strip()
-            if line.startswith("Place,Team,Score"):
-                in_team_scores = True
-                in_individual_results = False
-                continue
-            elif line.startswith("Place,Grade,Name,Athlete Link,Time,Team,Team Link,Profile Pic"):
-                in_team_scores = False
+            if line.startswith("Place,Grade,Name,Athlete Link,Time,Team,Team Link,Profile Pic"):
                 in_individual_results = True
                 continue
             elif not line:
                 continue
 
-            data = line.split(',')
-            if in_team_scores and len(data) >= 3:
-                team_scores.append(data[:3])
-            elif in_individual_results and len(data) >= 8:
-                individual_results.append(data[:8])
-    return team_scores, individual_results
+            if in_individual_results:
+                data = line.split(',')
+                if len(data) >= 8:
+                    result = {
+                        "Place": data[0],
+                        "Grade": int(data[1]),
+                        "Name": data[2],
+                        "Time": data[4],
+                        "Team": data[5],
+                        "Profile Pic": data[7]
+                    }
+                    individual_results.append(result)
+    return individual_results
+
+# Function to filter top 3 results by time
+def get_top_results(results, top_n=3):
+    return sorted(results, key=lambda x: x["Time"])[:top_n]
+
+# Function to filter results by grade and gender
+def filter_by_grade(results, grade):
+    return [result for result in results if result["Grade"] == grade]
 
 # HTML generation function
-def generate_html_page(filename, title, subtitle, team_scores, individual_results):
+def generate_html_page(filename, title, subtitle, individual_results):
     html_content = f"""
     <!DOCTYPE html>
     <html lang="en">
@@ -47,7 +60,7 @@ def generate_html_page(filename, title, subtitle, team_scores, individual_result
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" type="text/css" href="css/reset.css"> 
         <link rel="stylesheet" href="css/style.css">
-        <title>Client Project - Results</title>
+        <title>{title}</title>
     </head>
     <body>
         <header id="main-header">
@@ -72,41 +85,24 @@ def generate_html_page(filename, title, subtitle, team_scores, individual_result
                 <section id="event-title">
                     <h2>{subtitle}</h2>
                 </section>
-                <section id="team-scores">
-                    <h2>Team Scores</h2>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Place</th>
-                                <th>Team</th>
-                                <th>Score</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-    """
-    for score in team_scores:
-        html_content += f"<tr><td>{score[0]}</td><td>{score[1]}</td><td>{score[2]}</td></tr>"
-
-    html_content += """
-                        </tbody>
-                    </table>
-                </section>
                 <section id="individual-results">
-                    <h2>Top 3 Results</h2>
+                    <h2>Top Results</h2>
     """
-    for result in individual_results[:3]:
-        athlete_name = result[2]
-        image_path = f"{image_folder}/{result[6].split('/')[-2]}.jpg"
-        if not os.path.exists(image_path):
+    for result in individual_results:
+        athlete_name = result["Name"]
+        # Check if 'Profile Pic' is in the result and formatted correctly
+        if 'Profile Pic' in result and result['Profile Pic'] and len(result['Profile Pic'].split('/')) > 1:
+            image_path = f"{image_folder}/{result['Profile Pic'].split('/')[-2]}.jpg"
+        else:
             image_path = "images/default.jpg"
         
         html_content += f"""
                     <div class="athlete">
                         <h3>{athlete_name}</h3>
-                        <p>Place: {result[0]}</p>
-                        <p>Grade: {result[1]}</p>
-                        <p>Time: {result[4]}</p>
-                        <p>Team: {result[5]}</p>
+                        <p>Place: {result['Place']}</p>
+                        <p>Grade: {result['Grade']}</p>
+                        <p>Time: {result['Time']}</p>
+                        <p>Team: {result['Team']}</p>
                         <img src="{image_path}" alt="Profile Picture of {athlete_name}" width="150">
                     </div>
                     <hr>
@@ -132,13 +128,33 @@ def generate_html_page(filename, title, subtitle, team_scores, individual_result
     with open(filename, 'w') as file:
         file.write(html_content)
 
-# Parse CSV data
-team_scores, individual_results = parse_csv(file_path)
+# Load data
+if os.path.exists(womens_file_path):
+    women_results = parse_csv(womens_file_path)
+else:
+    print("Error: Womens file not found.")
 
-# Generate each page with proper titles and data
-generate_html_page("results.html", "Event Summary", "SEC Jamboree #1 Womens 5000 Meters Junior Varsity", team_scores, individual_results)
-generate_html_page("mens.html", "Event Summary", "SEC Jamboree #1 Mens Event Summary", team_scores, individual_results)
-generate_html_page("womens.html", "Event Summary", "SEC Jamboree #1 Womens 5000 Meters Junior Varsity", team_scores, individual_results)
-generate_html_page("grade9.html", "Event Summary", "SEC Jamboree #1 Grade 9 Event Summary", team_scores, individual_results)
-generate_html_page("grade10.html", "Event Summary", "SEC Jamboree #1 Grade 10 Event Summary", team_scores, individual_results)
-generate_html_page("grade11.html", "Event Summary", "SEC Jamboree #1 Grade 11 Event Summary", team_scores, individual_results)
+if os.path.exists(mens_file_path):
+    men_results = parse_csv(mens_file_path)
+else:
+    print("Error: Mens file not found.")
+
+# Generate general results page - Top 3 Women
+if 'women_results' in locals():
+    top_women = get_top_results(women_results, 3)
+    generate_html_page("results.html", "Top 3 Results", "Top 3 Results - Women", top_women)
+
+# Men's Page - Top 3 Men
+if 'men_results' in locals():
+    top_men = get_top_results(men_results, 3)
+    generate_html_page("mens.html", "Top 3 Men's Results", "SEC Jamboree #1 Men's 5000 Meters Varsity", top_men)
+
+# Women's Page - Top 3 Women
+if 'top_women' in locals():
+    generate_html_page("womens.html", "Top 3 Women's Results", "SEC Jamboree #1 Women's 5000 Meters Junior Varsity", top_women)
+
+# Grade-specific pages for Women
+for grade in [9, 10, 11, 12]:
+    if 'women_results' in locals():
+        grade_women = filter_by_grade(women_results, grade)
+        generate_html_page(f"grade{grade}.html", f"Grade {grade} Women's Results", f"SEC Jamboree #1 Women's Grade {grade}", grade_women)
