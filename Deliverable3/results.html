@@ -24,16 +24,18 @@
             </nav>
             <h1>Top 3 Results</h1>
         </header>
-        <div style="text-align: right; padding: 10px; background-color: #f1f1f1; border: 1px solid #000;">
-            <button id="darkModeToggle">Toggle Dark Mode</button>
-        </div>
+        
+        <main> <!-- Start of main content landmark -->
+            <div style="text-align: right; padding: 10px; background-color: #f1f1f1; border: 1px solid #000;">
+                <button id="darkModeToggle">Toggle Dark Mode</button>
+            </div>
 
-        <!-- Search bar -->
-        <section id="search-bar" style="margin: 10px;">
-            <input type="text" id="searchInput" placeholder="Search for an athlete...">
-        </section>
+            <!-- Search bar with accessible label -->
+            <section id="search-bar" style="margin: 10px;">
+                <label for="searchInput">Search for an athlete:</label>
+                <input type="text" id="searchInput" placeholder="Search for an athlete...">
+            </section>
     
-        <main id="content">
             <div class="center-container">
                 <section id="event-title">
                     <h2>Top 3 Results - Women</h2>
@@ -46,44 +48,43 @@
                             <th>Grade</th>
                             <th>Time</th>
                             <th>Team</th>
-                            <th>Profile Picture</th>
                         </tr>
         
-                        <tr class="athlete">
+                        <tr>
                             <td>1.</td>
-                            <td><h3>Riley Provost</h3></td>
+                            <td>Riley Provost</td>
                             <td>11</td>
                             <td>23:15.00</td>
                             <td>Saline</td>
-                            <td><img src="images/14164024.jpg" alt="Profile Picture of Riley Provost" width="100"></td>
                         </tr>
             
-                        <tr class="athlete">
+                        <tr>
                             <td>2.</td>
-                            <td><h3>Claire Steinbrecher</h3></td>
+                            <td>Claire Steinbrecher</td>
                             <td>9</td>
                             <td>23:18.50</td>
                             <td>Dexter</td>
-                            <td><img src="images/21411167.jpg" alt="Profile Picture of Claire Steinbrecher" width="100"></td>
                         </tr>
             
-                        <tr class="athlete">
+                        <tr>
                             <td>3.</td>
-                            <td><h3>Mahalia Staton</h3></td>
+                            <td>Mahalia Staton</td>
                             <td>11</td>
                             <td>23:20.50</td>
                             <td>Saline</td>
-                            <td><img src="images/22262892.jpg" alt="Profile Picture of Mahalia Staton" width="100"></td>
                         </tr>
             
                     </table>
                 </section>
             </div>
-        </main>
         
+        </main> <!-- End of main content landmark -->
+
         <footer id="main-footer">
             <p>&copy; 2024 Client Project - All rights reserved.</p>
         </footer>
+
+        <!-- JavaScript for Dark Mode -->
         <script>
             const toggleButton = document.getElementById('darkModeToggle');
             toggleButton.addEventListener('click', () => {
