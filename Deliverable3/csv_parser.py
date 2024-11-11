@@ -95,9 +95,13 @@ def generate_html_page(filename, title, subtitle, individual_results):
                             <th>Grade</th>
                             <th>Time</th>
                             <th>Team</th>
+                            <th>Profile Picture</th>
                         </tr>
         """
         for result in individual_results:
+            profile_pic = result['Profile Pic']
+            # Use default image if specified profile pic is missing
+            image_path = f"{image_folder}/{profile_pic}" if os.path.exists(f"{image_folder}/{profile_pic}") else f"{image_folder}/default.jpg"
             html_content += f"""
                         <tr class="athlete">
                             <td>{result['Place']}</td>
@@ -105,6 +109,7 @@ def generate_html_page(filename, title, subtitle, individual_results):
                             <td>{result['Grade']}</td>
                             <td>{result['Time']}</td>
                             <td>{result['Team']}</td>
+                            <td><img src="{image_path}" alt="Profile Picture of {result['Name']}" width="100"></td>
                         </tr>
             """
         html_content += """
@@ -127,7 +132,8 @@ def generate_html_page(filename, title, subtitle, individual_results):
         for result in individual_results:
             athlete_name = result["Name"]
             profile_pic = result['Profile Pic']
-            image_path = f"{image_folder}/{profile_pic}" if profile_pic else "images/default.jpg"
+            # Check if image exists, otherwise use default image
+            image_path = f"{image_folder}/{profile_pic}" if os.path.exists(f"{image_folder}/{profile_pic}") else f"{image_folder}/default.jpg"
             
             html_content += f"""
                         <div class="athlete">
