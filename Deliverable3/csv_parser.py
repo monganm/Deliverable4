@@ -40,7 +40,7 @@ def get_top_results(results, top_n=3):
 def filter_by_grade(results, grade):
     return [result for result in results if result["Grade"] == grade]
 
-# HTML generation function with table support for results.html
+# HTML generation function with search bar integration
 def generate_html_page(filename, title, subtitle, individual_results):
     html_content = f"""
     <!DOCTYPE html>
@@ -51,6 +51,7 @@ def generate_html_page(filename, title, subtitle, individual_results):
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" type="text/css" href="css/reset.css"> 
         <link rel="stylesheet" href="css/style.css">
+        <script src="search.js" defer></script>  <!-- Link to search.js -->
         <title>{title}</title>
     </head>
     <body>
@@ -70,8 +71,14 @@ def generate_html_page(filename, title, subtitle, individual_results):
         <div style="text-align: right; padding: 10px; background-color: #f1f1f1; border: 1px solid #000;">
             <button id="darkModeToggle">Toggle Dark Mode</button>
         </div>
+
+        <!-- Search bar -->
+        <section id="search-bar" style="margin: 10px;">
+            <input type="text" id="searchInput" placeholder="Search for an athlete...">
+        </section>
     """
 
+    # Content generation (table or cards)
     if filename == "results.html":
         # Generate table for top 3 results
         html_content += f"""
@@ -88,20 +95,16 @@ def generate_html_page(filename, title, subtitle, individual_results):
                             <th>Grade</th>
                             <th>Time</th>
                             <th>Team</th>
-                            <th>Profile Picture</th>
                         </tr>
         """
         for result in individual_results:
-            profile_pic = result['Profile Pic']
-            image_path = f"{image_folder}/{profile_pic}" if os.path.exists(f"{image_folder}/{profile_pic}") else "images/default.jpg"
             html_content += f"""
-                        <tr>
+                        <tr class="athlete">
                             <td>{result['Place']}</td>
-                            <td>{result['Name']}</td>
+                            <td><h3>{result['Name']}</h3></td>
                             <td>{result['Grade']}</td>
                             <td>{result['Time']}</td>
                             <td>{result['Team']}</td>
-                            <td><img src="{image_path}" alt="Profile picture of {result['Name']}" width="100"></td>
                         </tr>
             """
         html_content += """
@@ -124,7 +127,7 @@ def generate_html_page(filename, title, subtitle, individual_results):
         for result in individual_results:
             athlete_name = result["Name"]
             profile_pic = result['Profile Pic']
-            image_path = f"{image_folder}/{profile_pic}" if os.path.exists(f"{image_folder}/{profile_pic}") else "images/default.jpg"
+            image_path = f"{image_folder}/{profile_pic}" if profile_pic else "images/default.jpg"
             
             html_content += f"""
                         <div class="athlete">
@@ -143,12 +146,11 @@ def generate_html_page(filename, title, subtitle, individual_results):
         </main>
         """
 
+    # Footer and JavaScript for dark mode
     html_content += """
         <footer id="main-footer">
             <p>&copy; 2024 Client Project - All rights reserved.</p>
         </footer>
-
-        <!-- JavaScript for Dark Mode -->
         <script>
             const toggleButton = document.getElementById('darkModeToggle');
             toggleButton.addEventListener('click', () => {
